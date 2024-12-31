@@ -42,6 +42,7 @@ Bprob_ptr Prob_srch(Prob_ptr head, int (*check)(Prob_ptr));
 int Prob_add(int pos, Prob_ptr head, int num1, int num2, int opt);
 int Prob_rm(int pos, Prob_ptr head);
 int Prob_size(Prob_ptr head);
+int Bprob_size(Bprob_ptr head);
 void Prob_print(Prob_ptr head);
 int Prob_rm_l(Bprob_ptr boat);
 int Prob_add_l(Prob_ptr head, Bprob_ptr boat);
@@ -50,6 +51,10 @@ Prob_ptr Prob_merge(Prob_ptr l, Prob_ptr r, int(*cmp)(const void*, const void*))
 Prob_ptr Prob_sort(Prob_ptr ptr, int(*cmp)(const void*, const void*));
 int Prob_s_and_rebuild(Prob_ptr ptr, int (*cmp)(const void*, const void*));
 
+char* Prob_to_json(Prob_ptr head);
+char* BProb_to_json(Bprob_ptr head);
+Prob_ptr Prob_de_json(char* str);
+Bprob_ptr Bprob_de_json(char* str);
 
 Bstu_ptr Stu_srch(Stu_ptr head, int (*check)(Stu_ptr));
 int Stu_add(int pos, Stu_ptr head, int cls, int score, char* name, char* profe);

@@ -1,7 +1,10 @@
+#include <json-c/json_object.h>
+#include <json-c/json_object_iterator.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "lkl.h"
+#include <json-c/json.h>
 /*
 define head_ptr
     prev = NULL
@@ -18,7 +21,7 @@ Bprob_ptr Prob_srch(Prob_ptr head, int (*check)(Prob_ptr)) {
             cur->next->val = head;
         }
     }   res->next->prev = NULL;
-    return res->next;
+    return res;
 }
 
 int Prob_add(int pos, Prob_ptr head, int num1, int num2, int opt) {
@@ -164,7 +167,7 @@ Bstu_ptr Stu_srch(Stu_ptr head, int (*check)(Stu_ptr)) {
             cur->next->val = head;
         }
     }   res->next->prev = NULL;
-    return res->next;
+    return res;
 }
 
 int Stu_add(int pos, Stu_ptr head, int cls, int score, char* name, char* profe) {
@@ -301,4 +304,50 @@ int Stu_s_and_rebuild(Stu_ptr ptr, int (*cmp)(const void*, const void*)) {
         res->prev = pr;
     }
     return 1;
+}
+
+int Bprob_size(Bprob_ptr head) {
+    int sz = 0;
+    for (; head; head = head->next) ++sz;
+    return sz - 1;
+}
+
+char* Prob_to_json(Prob_ptr head) {
+    struct json_object *json_obj = json_object_new_object();
+    struct json_object *json_arr = json_object_new_array();
+    for (; head; head = head->next) {
+        if (!head->prev) {
+            struct json_object *prob_s = json_object_new_object();
+            json_object_object_add(prob_s, "num1", json_object_new_int(head->num1));
+            json_object_object_add(prob_s, "num2", json_object_new_int(head->num2));
+            json_object_object_add(prob_s, "opt", json_object_new_int(head->opt));
+            json_object_object_add(prob_s, "id", json_object_new_int(head->id));
+            json_object_array_add(json_arr, prob_s);
+        }
+    }
+    json_object_object_add(json_obj, "Prob", json_arr);
+    int sz = Prob_size(head);
+    char *str = (char*) malloc(sizeof(char) * STRN * sz);
+    strcpy(str, json_object_to_json_string(json_obj));
+    return str;
+}
+
+char* Bprob_to_json(Bprob_ptr head) {
+    struct json_object *json_obj = json_object_new_object();
+    struct json_object *json_arr = json_object_new_array();
+    for (; head; head = head->next) {
+        if (!head->prev) {
+            struct json_object *prob_s = json_object_new_object();
+            json_object_object_add(prob_s, "num1", json_object_new_int(head->val->num1));
+            json_object_object_add(prob_s, "num2", json_object_new_int(head->val->num2));
+            json_object_object_add(prob_s, "opt", json_object_new_int(head->val->opt));
+            json_object_object_add(prob_s, "id", json_object_new_int(head->val->id));
+            json_object_array_add(json_arr, prob_s);
+        }
+    }
+    json_object_object_add(json_obj, "Prob", json_arr);
+    int sz = Bprob_size(head);
+    char *str = (char*) malloc(sizeof(char) * STRN * sz);
+    strcpy(str, json_object_to_json_string(json_obj));
+    return str;
 }
