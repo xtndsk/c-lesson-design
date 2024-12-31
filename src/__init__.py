@@ -13,6 +13,7 @@ class App:
         self.name = "NULL"
         self.situ = False 
         self.add_problem_button = tk.Button(self.rt, text="Add Problem", command=lambda: (not self.situ) or self.add_problem_func())
+        self.srh_problem_button = tk.Button(self.rt, text="Search", command=lambda: (not self.situ) or self.srh_problem_func())
 
         ###########################################
         self.lwin = tk.Toplevel(self.rt)
@@ -55,11 +56,12 @@ class App:
         ###########################################
 
         self.add_problem_button.pack()
+        self.srh_problem_button.pack()
 
     def add_problem_func(self):
         if self.type == "Teacher":
             print("in")
-            self.ap = tk.Toplevel()
+            self.ap = tk.Toplevel(self.rt)
             self.ap.protocol("WM_DELETE_WINDOW", lambda : None)
             self.situ = False
             self.ap_problem_label = tk.Label(self.ap, text="Input problem below: ")
@@ -79,7 +81,15 @@ class App:
                         eval(data["prob"])
                     except:
                         self.ap_problem_entry.delete(0, tk.END)
-                        msg.showerror("Error", "format: <num1><operator><num2>, the only supported operator is +, -, x, /;")
+                        msg.showerror("Error", "format: <num1><operator><num2>, the only supported operator is +, -, *, /;")
+                        return 
+                    typedict = {"+": 1, "-": 2, "*": 3, "/": 4}
+                    for opt in typedict:
+                        if opt in data["prob"]:
+                            data["type"] = typedict[opt]
+                    if "type" not in data:
+                        self.ap_problem_entry.delete(0, tk.END)
+                        msg.showerror("Error", "format: <num1><operator><num2>, the only supported operator is +, -, *, /;")
                         return 
                     data["ans"] = eval(data["prob"])
                     # res = requests.post("http://localhost:8080/add/", json=json.dumps(data)).json()
@@ -98,6 +108,20 @@ class App:
         else:
             msg.showwarning("Teacher Only", "Add problem is not available for students! ")
     
+    def srh_problem_func(self):
+        if self.type == "Teacher":
+            self.srh = tk.Toplevel(self.rt)
+            self.srh.protocol("WM_DELETE_WINDOW", lambda : None)
+            def srh_exit(self: App):
+                def pack():
+                    self.situ = True
+                    self.srh.destroy()
+                return pack
+            self.srh_exit_button = tk.Button(self.srh, text="Exit", command=srh_exit(self))
+            
+        else:
+            msg.showwarning("Teacher Only", "search problem is not available for students! ")
+
     def tmp_focus_in(self, etr: tk.Entry, df: str):
         def pack(event):
             if etr.get() == df:

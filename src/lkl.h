@@ -4,10 +4,15 @@
 
 #define STRN 1024
 
+typedef struct Prob* Prob_ptr;
+typedef struct Bprob* Bprob_ptr;
+typedef struct Stu* Stu_ptr;
+typedef struct Bstu* Bstu_ptr;
+
 struct Prob {
     struct Prob *prev;
     struct Prob *next;
-    int num[2];
+    int num1, num2;
     int opt, id;
 };
 
@@ -20,7 +25,7 @@ struct Bprob {
 struct Stu {
     struct Stu *prev;
     struct Stu *next;
-    struct Score *val;
+    int score;
     char profe[STRN];
     char name[STRN];
     int cls;
@@ -32,14 +37,4 @@ struct Bstu {
     struct Stu  *val;
 };
 
-struct Score {
-    struct Score *prev;
-    struct Score *next;
-    int id, test, score;
-};
-
-struct Exam {
-    struct Exam *prev;
-    struct Exam *next;
-    struct Prob *val; 
-};
+int Prob_size(Prob_ptr);
