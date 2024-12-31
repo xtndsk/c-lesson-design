@@ -7,7 +7,7 @@ define head_ptr
     next = NULL(mut)
     val = NULL(all)
 */
-Bprob_ptr srch_problem(Prob_ptr head, int (*check)(Prob_ptr)) {
+Bprob_ptr Prob_srch(Prob_ptr head, int (*check)(Prob_ptr)) {
     Bprob_ptr res = (Bprob_ptr) malloc (sizeof(Bprob)), cur = res;
     for (; head; head = head->next) {
         if (check(head)) {
@@ -20,7 +20,7 @@ Bprob_ptr srch_problem(Prob_ptr head, int (*check)(Prob_ptr)) {
     return res->next;
 }
 
-int add_problem(int pos, Prob_ptr head, int num1, int num2, int opt) {
+int Prob_add(int pos, Prob_ptr head, int num1, int num2, int opt) {
     int sz = Prob_size(head);
     if (pos > sz) return 0;
 
@@ -40,19 +40,83 @@ int add_problem(int pos, Prob_ptr head, int num1, int num2, int opt) {
     return 1;
 }
 
+int Prob_rm(int pos, Prob_ptr head) {
+    int sz = Prob_size(head);
+    if (pos > sz) return 0;
+
+    Prob_ptr rm;
+    for (; head; head = head->next) {
+        if (pos == head->id) {
+            head->prev->next = head->next;
+            head->next->prev = head->prev;
+            Prob_ptr rm = head;
+        } else if (head->id > pos) {
+            head->id -= 1;
+        }
+    }
+    if (rm) free(rm), rm = NULL;
+    return 1;
+}
+
 int Prob_size(Prob_ptr head) {
     int sz = 0;
     for (; head; head = head->next) ++sz;
     return sz - 1;
 }
 
-void printProb(Prob_ptr head) {
+void Prob_print(Prob_ptr head) {
     while (head) {
         printf("%d ", head->id);
         head = head->next;
     }   puts("");
 }
 
-Prob_ptr remove_problem(Prob_ptr head, Bprob_ptr boat) {
-
+int Prob_rm_l(Bprob_ptr boat) {
+    Bprob_ptr h = boat;
+    for (; boat; boat = boat->next) {
+        if (boat->val) {
+            boat->val->next->prev = boat->val->prev;
+            boat->val->prev->next = boat->val->next;
+            free(boat->val); boat->val = NULL;
+        }
+    }
+    for (; h->next; h = h->next) {
+        if (h->prev) free(h->prev), h->prev = NULL;
+    }   free(h), h = NULL;
+    return 1;
 }
+
+int Prob_add_l(Prob_ptr head, Bprob_ptr boat) { // add at the end of ll
+    for (; head->next; head = head->next) ;
+
+    Bprob_ptr h = boat;
+    for (; boat; boat = boat->next) {
+        if (boat->val) {
+            head->next = boat->val;
+            boat->val->prev = head;
+            boat->val->next = NULL;
+            head = head->next;
+        }
+    }
+    for (; h->next; h = h->next) {
+        if (h->prev) free(h->prev), h->prev = NULL;
+    }   free(h), h = NULL;
+    return 1;
+}
+
+int Prob_change(int pos, Prob_ptr head, int num1, int num2, int opt) {
+    int sz = Prob_size(head);
+    if (pos > sz) return 0;
+
+    for (; head; head = head->next) {
+        if (pos == head->id) {
+            head->num1 = num1;
+            head->num2 = num2;
+            head->opt = opt;
+            break;
+        }
+    }
+    return 1;
+}
+
+Prob_ptr Prob_sort(Prob_ptr head);
