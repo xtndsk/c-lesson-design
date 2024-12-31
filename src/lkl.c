@@ -452,3 +452,90 @@ Stu_ptr Stu_de_json(char* str) {
     }
     return res;
 }
+
+int write_Bp(Bprob_ptr head, char *filename) {
+    FILE *file = fopen(filename, "wb") ;
+    char *data = Bprob_to_json(head);
+    if (file == NULL) {
+        perror("文件打开失败");
+        return EXIT_FAILURE;
+    }
+    // 使用 fwrite 写入数据
+    size_t data_size = strlen(data); // 获取数据大小
+    if (fwrite(data, sizeof(char), data_size, file) != data_size) {
+        perror("写入失败");
+        fclose(file);
+        return EXIT_FAILURE;
+    }
+
+    printf("数据已写入文件：%s\n", filename);
+
+    fclose(file);
+    return EXIT_SUCCESS;
+
+}
+
+int write_P(Prob_ptr head, char *filename) {
+    FILE *file = fopen(filename, "wb") ;
+    char *data = Prob_to_json(head);
+    if (file == NULL) {
+        perror("文件打开失败");
+        return EXIT_FAILURE;
+    }
+    // 使用 fwrite 写入数据
+    size_t data_size = strlen(data); // 获取数据大小
+    if (fwrite(data, sizeof(char), data_size, file) != data_size) {
+        perror("写入失败");
+        fclose(file);
+        return EXIT_FAILURE;
+    }
+
+    printf("数据已写入文件：%s\n", filename);
+
+    fclose(file);
+    return EXIT_SUCCESS;
+
+}
+int write_Bs(Bstu_ptr head, char *filename) {
+    FILE *file = fopen(filename, "wb") ;
+    char *data = Bstu_to_json(head);
+    if (file == NULL) {
+        perror("文件打开失败");
+        return EXIT_FAILURE;
+    }
+    // 使用 fwrite 写入数据
+    size_t data_size = strlen(data); // 获取数据大小
+    if (fwrite(data, sizeof(char), data_size, file) != data_size) {
+        perror("写入失败");
+        fclose(file);
+        return EXIT_FAILURE;
+    }
+
+    printf("数据已写入文件：%s\n", filename);
+
+    fclose(file);
+    return EXIT_SUCCESS;
+
+}
+
+int write_S(Stu_ptr head, char *filename) {
+    FILE *file = fopen(filename, "wb") ;
+    char *data = Stu_to_json(head);
+    if (file == NULL) {
+        perror("文件打开失败");
+        return EXIT_FAILURE;
+    }
+    // 使用 fwrite 写入数据
+    size_t data_size = strlen(data); // 获取数据大小
+    if (fwrite(data, sizeof(char), data_size, file) != data_size) {
+        perror("写入失败");
+        fclose(file);
+        return EXIT_FAILURE;
+    }
+
+    printf("数据已写入文件：%s\n", filename);
+
+    fclose(file);
+    return EXIT_SUCCESS;
+
+}
