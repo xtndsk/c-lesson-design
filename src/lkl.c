@@ -377,3 +377,78 @@ Prob_ptr Prob_de_json(char *str) {
     }
     return res;
 }
+
+char* Stu_to_json(Stu_ptr head) {
+    struct json_object *json_obj = json_object_new_object();
+    struct json_object *json_arr = json_object_new_array();
+    for (; head; head = head->next) {
+        if (!head->prev) {
+            struct json_object *stu_s = json_object_new_object();
+            json_object_object_add(stu_s, "score", json_object_new_int(head->score));
+            json_object_object_add(stu_s, "cls", json_object_new_int(head->cls));
+            json_object_object_add(stu_s, "id", json_object_new_int(head->id));
+            json_object_object_add(stu_s, "profe", json_object_new_string(head->profe));
+            json_object_object_add(stu_s, "name", json_object_new_string(head->name));
+            json_object_array_add(json_arr, stu_s);
+        }
+    }
+    json_object_object_add(json_obj, "Stu", json_arr);
+    int sz = Stu_size(head);
+    char *str = (char*) malloc(sizeof(char) * STRN * sz);
+    strcpy(str, json_object_to_json_string(json_obj));
+    return str;
+}
+
+char* Bstu_to_json(Bstu_ptr head) {
+    struct json_object *json_obj = json_object_new_object();
+    struct json_object *json_arr = json_object_new_array();
+    for (; head; head = head->next) {
+        if (!head->prev) {
+            struct json_object *stu_s = json_object_new_object();
+            json_object_object_add(stu_s, "score", json_object_new_int(head->val->score));
+            json_object_object_add(stu_s, "cls", json_object_new_int(head->val->cls));
+            json_object_object_add(stu_s, "id", json_object_new_int(head->val->id));
+            json_object_object_add(stu_s, "profe", json_object_new_string(head->val->profe));
+            json_object_object_add(stu_s, "name", json_object_new_string(head->val->name));
+            json_object_array_add(json_arr, stu_s);
+        }
+    }
+    json_object_object_add(json_obj, "Stu", json_arr);
+    int sz = Bstu_size(head);
+    char *str = (char*) malloc(sizeof(char) * STRN * sz);
+    strcpy(str, json_object_to_json_string(json_obj));
+    return str;
+
+}
+
+int Bstu_size(Bstu_ptr head) {
+    int sz = 0;
+    for (; head; head = head->next) ++sz;
+    return sz - 1;
+}
+
+Stu_ptr Stu_de_json(char* str) {
+    Stu_ptr head = (Stu_ptr) malloc(sizeof(Stu)), res = head;
+    struct json_object *parsed_obj = json_tokener_parse(str);
+    struct json_object *parsed_arr;
+    json_object_object_get_ex(parsed_obj, "Stu", &parsed_arr);
+    for (int i = 0; i < json_object_array_length(parsed_arr); ++i) {
+        struct json_object *item = json_object_array_get_idx(parsed_arr, i);
+        head->next = (Stu_ptr) malloc (sizeof(Stu)), head->next->prev = head;
+        json_object_object_foreach(item, key, val) {
+            if (strcmp(key, "cls") == 0) {
+                head->next->cls = json_object_get_int(val);
+            } else if (strcmp(key, "score") == 0) {
+                head->next->score = json_object_get_int(val);
+            } else if (strcmp(key, "profe") == 0) {
+                strcpy(head->next->profe, json_object_get_string(val));
+            } else if (strcmp(key, "name") == 0) {
+                strcpy(head->next->name, json_object_get_string(val));
+            }else if (strcmp(key, "id") == 0) {
+                head->next->id = json_object_get_int(val);
+            }
+        }
+        head = head->next;
+    }
+    return res;
+}

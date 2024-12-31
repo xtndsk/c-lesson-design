@@ -55,10 +55,15 @@ char* Prob_to_json(Prob_ptr head);
 char* BProb_to_json(Bprob_ptr head);
 Prob_ptr Prob_de_json(char* str);
 
+char* Stu_to_json(Stu_ptr head);
+char* Bstu_to_json(Bstu_ptr head);
+Stu_ptr Stu_de_json(char* str);
+
 Bstu_ptr Stu_srch(Stu_ptr head, int (*check)(Stu_ptr));
 int Stu_add(int pos, Stu_ptr head, int cls, int score, char* name, char* profe);
 int Stu_rm(int pos, Stu_ptr head);
 int Stu_size(Stu_ptr head);
+int Bstu_size(Bstu_ptr head);
 void Stu_print(Stu_ptr head);
 int Stu_rm_l(Bstu_ptr boat);
 int Stu_add_l(Stu_ptr head, Bstu_ptr boat);
