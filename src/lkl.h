@@ -54,7 +54,6 @@ int Prob_s_and_rebuild(Prob_ptr ptr, int (*cmp)(const void*, const void*));
 char* Prob_to_json(Prob_ptr head);
 char* BProb_to_json(Bprob_ptr head);
 Prob_ptr Prob_de_json(char* str);
-Bprob_ptr Bprob_de_json(char* str);
 
 Bstu_ptr Stu_srch(Stu_ptr head, int (*check)(Stu_ptr));
 int Stu_add(int pos, Stu_ptr head, int cls, int score, char* name, char* profe);

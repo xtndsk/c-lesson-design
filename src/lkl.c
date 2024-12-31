@@ -1,5 +1,7 @@
 #include <json-c/json_object.h>
 #include <json-c/json_object_iterator.h>
+#include <json-c/json_tokener.h>
+#include <json-c/json_types.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -350,4 +352,28 @@ char* Bprob_to_json(Bprob_ptr head) {
     char *str = (char*) malloc(sizeof(char) * STRN * sz);
     strcpy(str, json_object_to_json_string(json_obj));
     return str;
+}
+
+Prob_ptr Prob_de_json(char *str) {
+    Prob_ptr head = (Prob_ptr) malloc(sizeof(Prob)), res = head;
+    struct json_object *parsed_obj = json_tokener_parse(str);
+    struct json_object *parsed_arr;
+    json_object_object_get_ex(parsed_obj, "Prob", &parsed_arr);
+    for (int i = 0; i < json_object_array_length(parsed_arr); ++i) {
+        struct json_object *item = json_object_array_get_idx(parsed_arr, i);
+        head->next = (Prob_ptr) malloc (sizeof(Prob)), head->next->prev = head;
+        json_object_object_foreach(item, key, val) {
+            if (strcmp(key, "num1") == 0) {
+                head->next->num1 = json_object_get_int(val);
+            } else if (strcmp(key, "num2") == 0) {
+                head->next->num2 = json_object_get_int(val);
+            } else if (strcmp(key, "opt") == 0) {
+                head->next->opt = json_object_get_int(val);
+            } else if (strcmp(key, "id") == 0) {
+                head->next->id = json_object_get_int(val);
+            }
+        }
+        head = head->next;
+    }
+    return res;
 }
