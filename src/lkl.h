@@ -67,17 +67,19 @@ int Stu_s_and_rebuild(Stu_ptr ptr, int (*cmp)(const void*, const void*));
 char* Prob_to_json(Prob_ptr head);
 char* BProb_to_json(Bprob_ptr head);
 Prob_ptr Prob_de_json(char* str);
+Bprob_ptr Bprob_de_json(char* str);
 
 char* Stu_to_json(Stu_ptr head);
 char* Bstu_to_json(Bstu_ptr head);
 Stu_ptr Stu_de_json(char* str);
+Bstu_ptr Bstu_de_json(char* str);
 
 int write_Bp(Bprob_ptr head, char* filename);
 int write_P(Prob_ptr head, char* filename);
 int write_Bs(Bstu_ptr head, char* filename);
 int write_S(Stu_ptr head, char* filename);
 
-int read_Bp(Bprob_ptr head, char* filename); //
-int read_P(Prob_ptr head, char* filename); //
-int read_Bs(Bstu_ptr head, char* filename); //
-int read_S(Stu_ptr head, char* filename); //
+Bprob_ptr read_Bp(char* filename); //
+Prob_ptr read_P(char* filename); //
+Bstu_ptr read_Bs(char* filename); //
+Stu_ptr read_S(char* filename); //

@@ -42,13 +42,15 @@ static void handle_post(struct mg_connection *c, struct mg_http_message *hm) {
 static void fn(struct mg_connection *c, int ev, void *ev_data) {
     if (ev == MG_EV_HTTP_MSG) {
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;
-        if (mg_match(hm->uri, mg_str("/"), NULL)) { // 仅处理 "/api" 路径
+        if (mg_match(hm->uri, mg_str("/"), NULL)) {
             if (mg_strcmp(hm->method, mg_str("POST")) == 0) {
                 handle_post(c, hm); // 处理 POST 请求
             } else {
                 mg_http_reply(c, 405, "Content-Type: application/json\r\n", 
                               "{\"ans\":\"no\"}");
             }
+        } else if (mg_match(hm->uri, mg_str(""), NULL)) {
+            
         } else {
             mg_http_reply(c, 404, "Content-Type: application/json\r\n", 
                           "{\"ans\":\"no\"}");

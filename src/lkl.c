@@ -378,6 +378,31 @@ Prob_ptr Prob_de_json(char *str) {
     return res;
 }
 
+Bprob_ptr Bprob_de_json(char *str) {
+    Bprob_ptr head = (Bprob_ptr) malloc(sizeof(Bprob)), res = head;
+    struct json_object *parsed_obj = json_tokener_parse(str);
+    struct json_object *parsed_arr;
+    json_object_object_get_ex(parsed_obj, "Prob", &parsed_arr);
+    for (int i = 0; i < json_object_array_length(parsed_arr); ++i) {
+        struct json_object *item = json_object_array_get_idx(parsed_arr, i);
+        head->next = (Bprob_ptr) malloc (sizeof(Bprob)), head->next->prev = head;
+        head->val = (Prob_ptr) malloc (sizeof(Prob));
+        json_object_object_foreach(item, key, val) {
+            if (strcmp(key, "num1") == 0) {
+                head->next->val->num1 = json_object_get_int(val);
+            } else if (strcmp(key, "num2") == 0) {
+                head->next->val->num2 = json_object_get_int(val);
+            } else if (strcmp(key, "opt") == 0) {
+                head->next->val->opt = json_object_get_int(val);
+            } else if (strcmp(key, "id") == 0) {
+                head->next->val->id = json_object_get_int(val);
+            }
+        }
+        head = head->next;
+    }
+    return res;
+}
+
 char* Stu_to_json(Stu_ptr head) {
     struct json_object *json_obj = json_object_new_object();
     struct json_object *json_arr = json_object_new_array();
@@ -446,6 +471,33 @@ Stu_ptr Stu_de_json(char* str) {
                 strcpy(head->next->name, json_object_get_string(val));
             }else if (strcmp(key, "id") == 0) {
                 head->next->id = json_object_get_int(val);
+            }
+        }
+        head = head->next;
+    }
+    return res;
+}
+
+Bstu_ptr Bstu_de_json(char* str) {
+    Bstu_ptr head = (Bstu_ptr) malloc(sizeof(Bstu)), res = head;
+    struct json_object *parsed_obj = json_tokener_parse(str);
+    struct json_object *parsed_arr;
+    json_object_object_get_ex(parsed_obj, "Stu", &parsed_arr);
+    for (int i = 0; i < json_object_array_length(parsed_arr); ++i) {
+        struct json_object *item = json_object_array_get_idx(parsed_arr, i);
+        head->next = (Bstu_ptr) malloc (sizeof(Stu)), head->next->prev = head;
+        head->val = (Stu_ptr) malloc (sizeof(Stu));
+        json_object_object_foreach(item, key, val) {
+            if (strcmp(key, "cls") == 0) {
+                head->next->val->cls = json_object_get_int(val);
+            } else if (strcmp(key, "score") == 0) {
+                head->next->val->score = json_object_get_int(val);
+            } else if (strcmp(key, "profe") == 0) {
+                strcpy(head->next->val->profe, json_object_get_string(val));
+            } else if (strcmp(key, "name") == 0) {
+                strcpy(head->next->val->name, json_object_get_string(val));
+            }else if (strcmp(key, "id") == 0) {
+                head->next->val->id = json_object_get_int(val);
             }
         }
         head = head->next;
@@ -538,4 +590,158 @@ int write_S(Stu_ptr head, char *filename) {
     fclose(file);
     return EXIT_SUCCESS;
 
+}
+
+
+Bprob_ptr read_Bp(char* filename) {
+
+    // 打开文件以读取模式 ("rb" 表示读取二进制文件)
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("文件打开失败");
+        return NULL;
+    }
+
+    // 获取文件大小
+    fseek(file, 0, SEEK_END);  // 将文件指针移动到末尾
+    long file_size = ftell(file); // 获取文件大小
+    rewind(file);  // 将文件指针重置到开头
+
+    // 分配内存以存储文件内容
+    char *buffer = (char *)malloc(file_size + 1); // +1 为了存储字符串的 '\0'
+    if (buffer == NULL) {
+        perror("内存分配失败");
+        fclose(file);
+        return NULL;
+    }
+
+    // 读取文件内容到缓冲区
+    if (fread(buffer, sizeof(char), file_size, file) != file_size) {
+        perror("读取失败");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[file_size] = '\0'; // 确保缓冲区以 '\0' 结束，便于作为字符串使用
+    Bprob_ptr head = (Bprob_ptr) malloc (sizeof(Bprob));
+    head = Bprob_de_json(buffer);
+
+    free(buffer);
+    fclose(file);
+    return head;
+}
+Prob_ptr read_P(char* filename) {
+
+    // 打开文件以读取模式 ("rb" 表示读取二进制文件)
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("文件打开失败");
+        return NULL;
+    }
+
+    // 获取文件大小
+    fseek(file, 0, SEEK_END);  // 将文件指针移动到末尾
+    long file_size = ftell(file); // 获取文件大小
+    rewind(file);  // 将文件指针重置到开头
+
+    // 分配内存以存储文件内容
+    char *buffer = (char *)malloc(file_size + 1); // +1 为了存储字符串的 '\0'
+    if (buffer == NULL) {
+        perror("内存分配失败");
+        fclose(file);
+        return NULL;
+    }
+
+    // 读取文件内容到缓冲区
+    if (fread(buffer, sizeof(char), file_size, file) != file_size) {
+        perror("读取失败");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[file_size] = '\0'; // 确保缓冲区以 '\0' 结束，便于作为字符串使用
+    Prob_ptr head = (Prob_ptr) malloc (sizeof(Prob));
+    head = Prob_de_json(buffer);
+
+    free(buffer);
+    fclose(file);
+    return head;
+}
+Bstu_ptr read_Bs(char* filename) {
+
+    // 打开文件以读取模式 ("rb" 表示读取二进制文件)
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("文件打开失败");
+        return NULL;
+    }
+
+    // 获取文件大小
+    fseek(file, 0, SEEK_END);  // 将文件指针移动到末尾
+    long file_size = ftell(file); // 获取文件大小
+    rewind(file);  // 将文件指针重置到开头
+
+    // 分配内存以存储文件内容
+    char *buffer = (char *)malloc(file_size + 1); // +1 为了存储字符串的 '\0'
+    if (buffer == NULL) {
+        perror("内存分配失败");
+        fclose(file);
+        return NULL;
+    }
+
+    // 读取文件内容到缓冲区
+    if (fread(buffer, sizeof(char), file_size, file) != file_size) {
+        perror("读取失败");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[file_size] = '\0'; // 确保缓冲区以 '\0' 结束，便于作为字符串使用
+    Bstu_ptr head = (Bstu_ptr) malloc (sizeof(Bstu));
+    head = Bstu_de_json(buffer);
+
+    free(buffer);
+    fclose(file);
+    return head;
+}
+Stu_ptr read_S(char* filename) {
+
+    // 打开文件以读取模式 ("rb" 表示读取二进制文件)
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("文件打开失败");
+        return NULL;
+    }
+
+    // 获取文件大小
+    fseek(file, 0, SEEK_END);  // 将文件指针移动到末尾
+    long file_size = ftell(file); // 获取文件大小
+    rewind(file);  // 将文件指针重置到开头
+
+    // 分配内存以存储文件内容
+    char *buffer = (char *)malloc(file_size + 1); // +1 为了存储字符串的 '\0'
+    if (buffer == NULL) {
+        perror("内存分配失败");
+        fclose(file);
+        return NULL;
+    }
+
+    // 读取文件内容到缓冲区
+    if (fread(buffer, sizeof(char), file_size, file) != file_size) {
+        perror("读取失败");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[file_size] = '\0'; // 确保缓冲区以 '\0' 结束，便于作为字符串使用
+    Stu_ptr head = (Stu_ptr) malloc (sizeof(Stu));
+    head = Stu_de_json(buffer);
+
+    free(buffer);
+    fclose(file);
+    return head;
 }
